@@ -1223,6 +1223,21 @@
       revenue: afAnswers.step5,
       qualified: qualified
     });
+
+    fetch('/api/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: afAnswers.name,
+        email: afAnswers.email,
+        niche: afAnswers.niche,
+        posting: afAnswers.step4,
+        revenue: afAnswers.step5,
+        goal: afAnswers.goal,
+        profile: afAnswers.profile,
+        qualified
+      })
+    }).catch(() => {});
   }
 
   document.getElementById('afNiche').addEventListener('keydown', e => { if (e.key === 'Enter') afNext(1); });

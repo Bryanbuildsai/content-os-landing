@@ -9,6 +9,8 @@ export default async function handler(req, res) {
   const STAGE_ID     = process.env.CONTENT_OS_STAGE_CALL_BOOKED;
   const TG_TOKEN     = process.env.TELEGRAM_TOKEN_JOHN;
   const TG_CHAT      = process.env.TELEGRAM_CHAT_ID;
+  const SB_URL       = process.env.SUPABASE_URL;
+  const SB_KEY       = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   try {
     // 1. Create GHL contact (v2 API)
@@ -78,6 +80,20 @@ export default async function handler(req, res) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: TG_CHAT, text: msg })
     });
+
+    // 4. Mark lead as booked in Supabase (match by email)
+    if (SB_URL && SB_KEY && email) {
+      await fetch(`${SB_URL}/rest/v1/landing_leads?email=eq.${encodeURIComponent(email)}&order=created_at.desc&limit=1`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': `Bearer ${SB_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ booked_call: true })
+      });
+    }
 
     res.status(200).json({ ok: true });
   } catch (err) {
