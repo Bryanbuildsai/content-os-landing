@@ -1190,10 +1190,22 @@
 
   document.getElementById('afNiche').addEventListener('keydown', e => { if (e.key === 'Enter') afNext(1); });
 
-  // Track Cal.com booking confirmed
+  // Track Cal.com booking confirmed + trigger GHL/Telegram
   window.addEventListener('message', e => {
     if (e.data?.type === 'CAL:booking:successful') {
       gtag('event', 'call_booked');
+      fetch('/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: afAnswers.name,
+          email: afAnswers.email,
+          niche: afAnswers.niche,
+          posting: afAnswers.step4,
+          revenue: afAnswers.step5,
+          goal: afAnswers.goal
+        })
+      }).catch(() => {});
     }
   });
 </script>
