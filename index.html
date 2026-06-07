@@ -964,7 +964,7 @@
       Apply to work with us
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
-    <p style="font-size:12px;color:var(--muted);margin-top:14px;font-weight:500;">6 questions. 60 seconds.</p>
+    <p style="font-size:12px;color:var(--muted);margin-top:14px;font-weight:500;">7 questions. 60 seconds.</p>
   </div>
 </div>
 
@@ -979,7 +979,7 @@
 
     <!-- Step 1 -->
     <div class="af-panel active" id="afStep1">
-      <div class="af-num">01 / 06</div>
+      <div class="af-num">01 / 07</div>
       <div class="af-q">What's your full name?</div>
       <input class="af-input" type="text" id="afName" placeholder="e.g. Marcus Johnson" autocomplete="off">
       <button class="btn btn-primary af-btn" onclick="afNext(1)">Continue <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -987,7 +987,7 @@
 
     <!-- Step 2 -->
     <div class="af-panel" id="afStep2">
-      <div class="af-num">02 / 06</div>
+      <div class="af-num">02 / 07</div>
       <div class="af-q">What's your email?</div>
       <input class="af-input" type="email" id="afEmail" placeholder="e.g. marcus@example.com" autocomplete="off">
       <button class="btn btn-primary af-btn" onclick="afNext(2)">Continue <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -995,7 +995,7 @@
 
     <!-- Step 3 -->
     <div class="af-panel" id="afStep3">
-      <div class="af-num">03 / 06</div>
+      <div class="af-num">03 / 07</div>
       <div class="af-q">What's your business or niche?</div>
       <input class="af-input" type="text" id="afNiche" placeholder="e.g. Online fitness coaching" autocomplete="off">
       <button class="btn btn-primary af-btn" onclick="afNext(3)">Continue <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -1003,7 +1003,7 @@
 
     <!-- Step 4 -->
     <div class="af-panel" id="afStep4">
-      <div class="af-num">04 / 06</div>
+      <div class="af-num">04 / 07</div>
       <div class="af-q">Are you currently posting content consistently?</div>
       <div class="af-opts">
         <button class="af-opt" onclick="afSelect(4, 'yes', this)">Yes, regularly</button>
@@ -1013,7 +1013,7 @@
 
     <!-- Step 5 -->
     <div class="af-panel" id="afStep5">
-      <div class="af-num">05 / 06</div>
+      <div class="af-num">05 / 07</div>
       <div class="af-q">How much is your business currently making per month?</div>
       <div class="af-opts">
         <button class="af-opt" onclick="afSelect(5, 'under5k', this)">Under $5K</button>
@@ -1025,9 +1025,18 @@
 
     <!-- Step 6 -->
     <div class="af-panel" id="afStep6">
-      <div class="af-num">06 / 06</div>
+      <div class="af-num">06 / 07</div>
       <div class="af-q">What's your main goal with this system?</div>
       <textarea class="af-input af-textarea" id="afGoal" placeholder="e.g. I want 5+ booked calls per month from content alone" rows="3"></textarea>
+      <button class="btn btn-primary af-btn" onclick="afNext(6)">Continue <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+
+    <!-- Step 7 -->
+    <div class="af-panel" id="afStep7">
+      <div class="af-num">07 / 07</div>
+      <div class="af-q">Your Instagram or YouTube URL</div>
+      <p style="font-size:13px;color:var(--muted);font-weight:500;margin-top:-8px;">Optional — so I can review your content before the call.</p>
+      <input class="af-input" type="url" id="afProfile" placeholder="e.g. instagram.com/yourhandle" autocomplete="off">
       <button class="btn btn-primary af-btn" onclick="afSubmit()">Submit <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
 
@@ -1135,7 +1144,7 @@
 
   // Application modal
   const afAnswers = {};
-  const totalSteps = 6;
+  const totalSteps = 7;
 
   function afOpen() {
     document.getElementById('afOverlay').classList.add('open');
@@ -1179,6 +1188,12 @@
       if (!val) { document.getElementById('afNiche').focus(); return; }
       afAnswers.niche = val;
       afSetStep(4); afShowPanel('afStep4');
+    } else if (step === 6) {
+      const goal = document.getElementById('afGoal').value.trim();
+      if (!goal) { document.getElementById('afGoal').focus(); return; }
+      afAnswers.goal = goal;
+      afSetStep(7); afShowPanel('afStep7');
+      setTimeout(() => document.getElementById('afProfile').focus(), 50);
     }
   }
 
@@ -1193,10 +1208,8 @@
   }
 
   function afSubmit() {
-    const goal = document.getElementById('afGoal').value.trim();
-    if (!goal) { document.getElementById('afGoal').focus(); return; }
-    afAnswers.goal = goal;
-    afSetStep(6);
+    afAnswers.profile = document.getElementById('afProfile').value.trim();
+    afSetStep(7);
     afShowPanel('afResult');
 
     // Qualify: must be $10K+/month
@@ -1227,7 +1240,8 @@
           niche: afAnswers.niche,
           posting: afAnswers.step4,
           revenue: afAnswers.step5,
-          goal: afAnswers.goal
+          goal: afAnswers.goal,
+          profile: afAnswers.profile
         })
       }).catch(() => {});
     }

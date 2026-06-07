@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
-  const { name, email, niche, posting, revenue, goal } = req.body;
+  const { name, email, niche, posting, revenue, goal, profile } = req.body;
 
   const GHL_KEY      = process.env.GHL_API_KEY;
   const LOCATION_ID  = process.env.GHL_LOCATION_ID;
@@ -69,7 +69,8 @@ export default async function handler(req, res) {
       `Niche: ${niche}`,
       `Posting: ${posting === 'yes' ? 'Yes ✓' : 'No ✗'}`,
       `Revenue: ${revenueLabel}`,
-      `Goal: ${goal}`
+      `Goal: ${goal}`,
+      ...(profile ? [`Profile: ${profile}`] : [])
     ].join('\n');
 
     await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
