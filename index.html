@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Content OS — Book a Call</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-74546LXXWZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-74546LXXWZ');
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -184,7 +192,8 @@
     }
 
     /* ── Divider ────────────────────── */
-    .section-hr { border: none; border-top: 1px solid var(--line); }
+    .section-hr { border: none; border-top: 1px solid var(--line); transform-origin: left; transform: scaleX(0); transition: transform 1.4s cubic-bezier(0.16,1,0.3,1); }
+    .section-hr.in { transform: scaleX(1); }
     .full-hr { max-width: 1080px; margin: 0 auto; }
 
     /* ── Section base ───────────────── */
@@ -548,10 +557,10 @@
 
     /* ── Scroll reveal ───────────────── */
     .fade {
-      opacity: 0; transform: translateY(22px);
-      transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.16,1,0.3,1);
+      opacity: 0; transform: translateY(28px); filter: blur(4px);
+      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16,1,0.3,1), filter 0.65s ease;
     }
-    .fade.in { opacity: 1; transform: translateY(0); }
+    .fade.in { opacity: 1; transform: translateY(0); filter: blur(0); }
     .d1 { transition-delay: 0.08s; }
     .d2 { transition-delay: 0.16s; }
     .d3 { transition-delay: 0.24s; }
@@ -561,10 +570,53 @@
 
     /* Hero entrance */
     .h-in {
-      opacity: 0; transform: translateY(18px);
-      animation: hIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+      opacity: 0; transform: translateY(18px); filter: blur(3px);
+      animation: hIn 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
     }
-    @keyframes hIn { to { opacity:1; transform:translateY(0); } }
+    @keyframes hIn { to { opacity:1; transform:translateY(0); filter:blur(0); } }
+
+    /* ── Nav entrance ───────────────── */
+    nav { animation: navIn 0.6s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
+    @keyframes navIn { from { transform: translateY(-100%); opacity: 0; } }
+
+    /* ── Pipeline card float ─────────── */
+    .pipeline-card { animation: float 7s ease-in-out 1.2s infinite; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    /* ── Apply button ring pulse ─────── */
+    .booking-apply-btn { position: relative; }
+    .booking-apply-btn::after {
+      content: ''; position: absolute; inset: -6px; border-radius: 12px;
+      border: 1.5px solid rgba(107,159,255,0.55); opacity: 0;
+      pointer-events: none;
+      animation: ringPulse 2.8s ease-in-out 0.8s infinite;
+    }
+    @keyframes ringPulse { 0%,100% { opacity:0; transform:scale(1); } 50% { opacity:0.5; transform:scale(1.04); } }
+
+    /* ── Ambient background glow ─────── */
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+      background:
+        radial-gradient(ellipse 900px 600px at 15% 5%, rgba(107,159,255,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 700px 500px at 88% 95%, rgba(107,159,255,0.04) 0%, transparent 60%);
+      animation: bgDrift 20s ease-in-out infinite alternate;
+    }
+    @keyframes bgDrift { to { transform: translate(30px, -20px) scale(1.06); } }
+
+    /* ── Qualify list stagger ────────── */
+    .qualify-grid .qi {
+      opacity: 0; transform: translateX(-10px);
+      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    .qualify-grid.in .qi { opacity: 1; transform: translateX(0); }
+    .qualify-col:first-child  .qi:nth-child(1) { transition-delay: 0.10s; }
+    .qualify-col:first-child  .qi:nth-child(2) { transition-delay: 0.18s; }
+    .qualify-col:first-child  .qi:nth-child(3) { transition-delay: 0.26s; }
+    .qualify-col:first-child  .qi:nth-child(4) { transition-delay: 0.34s; }
+    .qualify-col:last-child   .qi:nth-child(1) { transition-delay: 0.13s; }
+    .qualify-col:last-child   .qi:nth-child(2) { transition-delay: 0.21s; }
+    .qualify-col:last-child   .qi:nth-child(3) { transition-delay: 0.29s; }
+    .qualify-col:last-child   .qi:nth-child(4) { transition-delay: 0.37s; }
 
     /* ── Responsive ─────────────────── */
     @media (max-width: 900px) {
@@ -1025,6 +1077,7 @@
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { threshold: 0.1 });
   document.querySelectorAll('.fade').forEach(el => io.observe(el));
+  document.querySelectorAll('.section-hr').forEach(el => io.observe(el));
 
   // Animated counters
   function animateCounter(el) {
@@ -1071,6 +1124,7 @@
     document.getElementById('afOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
     setTimeout(() => document.getElementById('afName').focus(), 400);
+    gtag('event', 'apply_modal_opened');
   }
 
   function afClose(e) {
@@ -1127,9 +1181,21 @@
     afAnswers.goal = goal;
     afSetStep(6);
     afShowPanel('afResult');
+    gtag('event', 'application_submitted', {
+      niche: afAnswers.niche,
+      posting: afAnswers.step4,
+      revenue: afAnswers.step5
+    });
   }
 
   document.getElementById('afNiche').addEventListener('keydown', e => { if (e.key === 'Enter') afNext(1); });
+
+  // Track Cal.com booking confirmed
+  window.addEventListener('message', e => {
+    if (e.data?.type === 'CAL:booking:successful') {
+      gtag('event', 'call_booked');
+    }
+  });
 </script>
 </body>
 </html>
