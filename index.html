@@ -1033,29 +1033,46 @@
 
     <!-- Result -->
     <div class="af-panel" id="afResult">
-      <div class="af-result-icon qualified">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="af-result-label">Application received.</div>
-      <div class="af-result-text" style="margin-bottom:8px;">Before you book — read this carefully.</div>
 
-      <div style="background:rgba(107,159,255,0.05);border:1px solid rgba(107,159,255,0.14);border-radius:10px;padding:20px 22px;display:flex;flex-direction:column;gap:12px;">
-        <div style="font-size:12px;font-weight:800;letter-spacing:0.1em;color:var(--blue);text-transform:uppercase;">What this call is</div>
-        <div style="font-size:14px;line-height:1.65;color:var(--off);font-weight:500;">This is a <strong style="color:var(--white)">sales call</strong>. Not a free strategy session, not a consultation. I will ask you questions to understand your situation, your goals, and what's not working. Then I'll show you exactly what I'd build for you.</div>
-        <div style="font-size:14px;line-height:1.65;color:var(--off);font-weight:500;">If it's a fit, <strong style="color:var(--white)">you will be expected to leave a payment by the end of the call</strong> to secure your spot. If it's not a fit, I'll tell you directly.</div>
-        <div style="font-size:14px;line-height:1.65;color:var(--off);font-weight:500;">Only book if you're ready for that conversation.</div>
+      <!-- Disqualified (hidden by default) -->
+      <div id="afResultDisq" style="display:none;flex-direction:column;gap:20px;">
+        <div class="af-result-icon disqualified">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 5l10 10M15 5l-10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="af-result-label dq">Not a fit right now.</div>
+        <div class="af-result-text">To work with us, your business needs to be at <strong style="color:var(--white)">$10K/month or more</strong>. This ensures you have the foundation to get maximum ROI from the system.</div>
+        <div style="background:rgba(255,100,100,0.04);border:1px solid rgba(255,100,100,0.12);border-radius:10px;padding:18px 20px;font-size:13px;line-height:1.65;color:var(--muted);font-weight:500;">
+          If that changes, come back and apply — the door is open. In the meantime, focus on getting your revenue up and your content consistent. That's what this system is built to scale, not start.
+        </div>
       </div>
 
-      <button class="btn btn-primary af-btn" style="margin-top:8px;"
+      <!-- Qualified (shown by default) -->
+      <div id="afResultQual" style="display:flex;flex-direction:column;gap:20px;">
+        <div class="af-result-icon qualified">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="af-result-label">Application received.</div>
+        <div class="af-result-text" style="margin-bottom:0;">Before you book — read this carefully.</div>
+
+        <div style="background:rgba(107,159,255,0.05);border:1px solid rgba(107,159,255,0.14);border-radius:10px;padding:20px 22px;display:flex;flex-direction:column;gap:12px;">
+          <div style="font-size:12px;font-weight:800;letter-spacing:0.1em;color:var(--blue);text-transform:uppercase;">What this call is</div>
+          <div style="font-size:14px;line-height:1.65;color:var(--off);font-weight:500;">This is a <strong style="color:var(--white)">sales call</strong>. Not a free strategy session, not a consultation. I will ask you questions to understand your situation, your goals, and what's not working. Then I'll show you exactly what I'd build for you.</div>
+          <div style="font-size:14px;line-height:1.65;color:var(--off);font-weight:500;">If it's a fit, <strong style="color:var(--white)">you will be expected to leave a payment by the end of the call</strong> to secure your spot. If it's not a fit, I'll tell you directly.</div>
+          <div style="font-size:14px;line-height:1.65;color:var(--off);font-weight:500;">Only book if you're ready for that conversation.</div>
+        </div>
+
+        <button class="btn btn-primary af-btn" style="margin-top:0;"
         data-cal-namespace="ai-content-system-strategy-call"
         data-cal-link="bryandoesai/ai-content-system-strategy-call"
         data-cal-config='{"layout":"month_view"}'>
         Book the call <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-    </div>
+      </div><!-- /afResultQual -->
 
-  </div>
-</div>
+    </div><!-- /afResult -->
+
+  </div><!-- /afModal -->
+</div><!-- /afOverlay -->
 
 <hr class="section-hr full-hr">
 
@@ -1181,10 +1198,17 @@
     afAnswers.goal = goal;
     afSetStep(6);
     afShowPanel('afResult');
+
+    // Qualify: must be $10K+/month
+    const qualified = afAnswers.step5 === '10k25k' || afAnswers.step5 === '25kplus';
+    document.getElementById('afResultQual').style.display = qualified ? 'flex' : 'none';
+    document.getElementById('afResultDisq').style.display = qualified ? 'none' : 'flex';
+
     gtag('event', 'application_submitted', {
       niche: afAnswers.niche,
       posting: afAnswers.step4,
-      revenue: afAnswers.step5
+      revenue: afAnswers.step5,
+      qualified: qualified
     });
   }
 
